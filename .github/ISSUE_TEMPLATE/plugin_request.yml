@@ -1,6 +1,6 @@
 name: "💡 Plugin request"
 description: Suggest a plugin"
-title: "plug: "
+title: "plugin: "
 labels: ["enhancement", "plugin-request"]
 body:
   - type: markdown
