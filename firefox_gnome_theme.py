@@ -67,6 +67,7 @@ BASE = """
 }}
 """
 
+
 class FirefoxGnomeThemePlugin(IPlugin):
     title = "Firefox Gnome Theme"
     author = "Gradience Team"
@@ -80,7 +81,7 @@ class FirefoxGnomeThemePlugin(IPlugin):
     }
     plugin_id = "firefox_gnome_theme"
     # Custom settings shown on a separate view
-    custom_settings = {}
+    custom_settings = {"overwrite": True}
     css = BASE
 
     def activate(self):
@@ -88,55 +89,83 @@ class FirefoxGnomeThemePlugin(IPlugin):
 
     def deactivate(self):
         pass
-    
-    def give_preset_settings(self, preset_settings):
+
+    def give_preset_settings(self, preset_settings, custom_settings=None):
         print("Preset settings", preset_settings)
         self.preset = preset_settings
         self.variables = preset_settings["variables"]
         self.palette = preset_settings["palette"]
-        
+        if custom_settings:
+            self.custom_settings = custom_settings
+
     def open_settings(self):
-        print("SETTINGS :D")
         window = Adw.PreferencesWindow()
         window.set_title("Firefox Gnome Theme Plugin")
-        window.present()
+        main_page = Adw.PreferencesPage()
+        apply_pref = Adw.PreferencesGroup()
+        apply_pref.set_title("Apply")
+        apply_pref.set_description("Preferences for applying the theme")
         
+        overwrite_row = Adw.ActionRow(
+            title="Overwrite",
+            subtitle="Overwrite the existing userChrome.css file",
+        )
+        overwrite_switch = Gtk.Switch()
+        overwrite_switch.set_active(self.custom_settings["overwrite"])
+        overwrite_switch.connect("notify::active", self.on_overwrite)
+        overwrite_switch.set_valign(Gtk.Align.CENTER)
+        overwrite_row.add_suffix(overwrite_switch)
+        overwrite_row.connect("activate", self.on_overwrite)
+        apply_pref.add(overwrite_row)
+        main_page.add(apply_pref)
+        window.add(main_page)
+        window.present()
+
+    def on_overwrite(self, widget, _):
+        self.custom_settings["overwrite"] = not self.custom_settings["overwrite"]
     def validate(self):
         return False, None
-    
-    def apply(self, dark_theme=False):             
+
+    def apply(self, dark_theme=False):
+        print("Applying Firefox Gnome Theme")
+        print(self.custom_settings["overwrite"])
         mozilla_profile_dir = Path("~/.mozilla/firefox/").expanduser()
         profiles = []
         if mozilla_profile_dir.exists():
             os.chdir(mozilla_profile_dir)
             for folder in mozilla_profile_dir.iterdir():
                 if folder.is_dir():
-                    if  str(folder).endswith(".default-release") or str(folder).endswith(".default"):
+                    if str(folder).endswith(".default-release") or str(folder).endswith(".default"):
                         profiles.append(folder)
-                    
+
         if len(profiles) == 0:
             print("No profiles found")
             return
         else:
-            self.css = self.css.format(d_1= self.palette["dark_"]["1"], d_2= self.palette["dark_"]["2"], d_3= self.palette["dark_"]["3"], d_4= self.palette["dark_"]["4"],
-                        l_1= self.palette["light_"]["1"], l_2= self.palette["light_"]["2"], l_3= self.palette["light_"]["3"], l_4= self.palette["light_"]["4"],
-                        bg = self.variables["window_bg_color"], fg = self.variables["window_fg_color"],
-                        
-                        red= self.palette["red_"]["5"], grn= self.palette["green_"]["5"], ylw= self.palette["yellow_"]["5"], blu= self.palette["blue_"]["5"],
-                        pnk= self.palette["purple_"]["5"], cyn= self.palette["blue_"]["5"], wht= self.palette["light_"]["5"], blk= self.palette["dark_"]["5"],
-                            
-                        b_red= self.palette["red_"]["1"], b_grn= self.palette["green_"]["1"], b_ylw= self.palette["yellow_"]["1"], b_blu= self.palette["blue_"]["1"],
-                        b_pnk= self.palette["purple_"]["1"], b_cyn= self.palette["blue_"]["1"], b_wht= self.palette["light_"]["1"],  b_blk= self.palette["dark_"]["1"])
+            self.css = self.css.format(d_1=self.palette["dark_"]["1"], d_2=self.palette["dark_"]["2"], d_3=self.palette["dark_"]["3"], d_4=self.palette["dark_"]["4"],
+                                       l_1=self.palette["light_"]["1"], l_2=self.palette["light_"][
+                                           "2"], l_3=self.palette["light_"]["3"], l_4=self.palette["light_"]["4"],
+                                       bg=self.variables["window_bg_color"], fg=self.variables["window_fg_color"],
+
+                                       red=self.palette["red_"]["5"], grn=self.palette["green_"][
+                                           "5"], ylw=self.palette["yellow_"]["5"], blu=self.palette["blue_"]["5"],
+                                       pnk=self.palette["purple_"]["5"], cyn=self.palette["blue_"][
+                                           "5"], wht=self.palette["light_"]["5"], blk=self.palette["dark_"]["5"],
+
+                                       b_red=self.palette["red_"]["1"], b_grn=self.palette["green_"][
+                                           "1"], b_ylw=self.palette["yellow_"]["1"], b_blu=self.palette["blue_"]["1"],
+                                       b_pnk=self.palette["purple_"]["1"], b_cyn=self.palette["blue_"]["1"], b_wht=self.palette["light_"]["1"],  b_blk=self.palette["dark_"]["1"])
             print(self.css)
             for profile in profiles:
                 print(profile)
                 profile = profile / "chrome" / "firefox-gnome-theme" / "customChrome.css"
-                with open(profile, "w", encoding="utf-8") as f:
-                    f.write(self.css)
-                    
-                
-    
-    def save(self):
-        return {}
-    
+                if profile.exists():
+                    if self.custom_settings["overwrite"]:
+                        with open(profile, "w", encoding="utf-8") as f:
+                            f.write(self.css)
+                else:
+                    with open(profile, "w", encoding="utf-8") as f:
+                        f.write(self.css)
 
+    def save(self):
+        return self.custom_settings
