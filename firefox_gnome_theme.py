@@ -1,5 +1,5 @@
 from yapsy.IPlugin import IPlugin
-
+from gi.repository import Gtk, Adw
 
 class FirefoxGnomeThemePlugin(IPlugin):
     title = "Firefox Gnome Theme"
@@ -32,6 +32,9 @@ class FirefoxGnomeThemePlugin(IPlugin):
         
     def open_settings(self):
         print("SETTINGS :D")
+        window = Adw.PreferencesWindow()
+        window.set_title("Firefox Gnome Theme Plugin")
+        window.present()
         
     def validate(self):
         if self.colors and self.palette:
@@ -44,9 +47,9 @@ class FirefoxGnomeThemePlugin(IPlugin):
                     }
     
     def apply(self, dark_theme=False):      
-        pass
+        print("apply")
     
     def save(self):
-        pass
+        print("save")
     
 
