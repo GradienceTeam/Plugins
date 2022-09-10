@@ -85,13 +85,17 @@ class FirefoxGnomeThemePlugin(IPlugin):
     css = BASE
 
     def activate(self):
+        # This is called when the plugin is activated
+        # It does nothing here, but you can use it to initialize
         pass
 
     def deactivate(self):
+        # This is called when the plugin is deactivated
+        # It does nothing here, but you can use it to clean up
         pass
 
     def give_preset_settings(self, preset_settings, custom_settings=None):
-        print("Preset settings", preset_settings)
+        # This is called by Gradience for giving to the plugin, the preset settings
         self.preset = preset_settings
         self.variables = preset_settings["variables"]
         self.palette = preset_settings["palette"]
@@ -99,6 +103,9 @@ class FirefoxGnomeThemePlugin(IPlugin):
             self.custom_settings = custom_settings
 
     def open_settings(self):
+        # This is called when the user clicks on the settings button
+        # I've choosed to leave the liberty to the plugin creator to decide how to show the settings
+        # But it's recommended to use a Adw.PreferencesWindow
         window = Adw.PreferencesWindow()
         window.set_title("Firefox Gnome Theme Plugin")
         main_page = Adw.PreferencesPage()
@@ -122,11 +129,19 @@ class FirefoxGnomeThemePlugin(IPlugin):
         window.present()
 
     def on_overwrite(self, widget, _):
+        # This is called when the user changes the overwrite setting
         self.custom_settings["overwrite"] = not self.custom_settings["overwrite"]
     def validate(self):
+        # Normally, it would be a good idea to validate the settings here
+        # But because there is only one setting and it can onbly be a boolean
+        # It's not necessary, but it's good practice
+        # If there would be an error, it's should return True, and the error message in a dictionary
         return False, None
 
     def apply(self, dark_theme=False):
+        # This is called when the user clicks on the apply button (the one in the headerbar)
+        # You can use dark_theme to know if the user wants a dark theme or not
+        
         print("Applying Firefox Gnome Theme")
         print(self.custom_settings["overwrite"])
         mozilla_profile_dir = Path("~/.mozilla/firefox/").expanduser()
