@@ -83,6 +83,11 @@ class FirefoxGnomeThemePlugin(IPlugin):
     # Custom settings shown on a separate view
     custom_settings = {"overwrite": True}
     css = BASE
+    browser_row = Adw.EntryRow(
+            title="Path to the profile directory",
+            
+        )
+    profile_dir = None
 
     def activate(self):
         # This is called when the plugin is activated
@@ -106,27 +111,58 @@ class FirefoxGnomeThemePlugin(IPlugin):
         # This is called when the user clicks on the settings button
         # I've choosed to leave the liberty to the plugin creator to decide how to show the settings
         # But it's recommended to use a Adw.PreferencesWindow
-        window = Adw.PreferencesWindow()
-        window.set_title("Firefox Gnome Theme Plugin")
-        main_page = Adw.PreferencesPage()
-        apply_pref = Adw.PreferencesGroup()
-        apply_pref.set_title("Apply")
-        apply_pref.set_description("Preferences for applying the theme")
+        self.window = Adw.PreferencesWindow()
+        self.window.set_title("Firefox Gnome Theme Plugin")
+        self.main_page = Adw.PreferencesPage()
+        # Apply
+        self.apply_pref = Adw.PreferencesGroup()
+        self.apply_pref.set_title("Apply")
+        self.apply_pref.set_description("Preferences for applying the theme")
         
-        overwrite_row = Adw.ActionRow(
+        self.overwrite_row = Adw.ActionRow(
             title="Overwrite",
             subtitle="Overwrite the existing userChrome.css file",
         )
-        overwrite_switch = Gtk.Switch()
-        overwrite_switch.set_active(self.custom_settings["overwrite"])
-        overwrite_switch.connect("notify::active", self.on_overwrite)
-        overwrite_switch.set_valign(Gtk.Align.CENTER)
-        overwrite_row.add_suffix(overwrite_switch)
-        overwrite_row.connect("activate", self.on_overwrite)
-        apply_pref.add(overwrite_row)
-        main_page.add(apply_pref)
-        window.add(main_page)
-        window.present()
+        self.overwrite_switch = Gtk.Switch()
+        self.overwrite_switch.set_active(self.custom_settings["overwrite"])
+        self.overwrite_switch.connect("notify::active", self.on_overwrite)
+        self.overwrite_switch.set_valign(Gtk.Align.CENTER)
+        self.overwrite_row.add_suffix(self.overwrite_switch)
+        self.overwrite_row.connect("activate", self.on_overwrite)
+        self.apply_pref.add(self.overwrite_row)
+        self.main_page.add(self.apply_pref)
+        
+        # Browser
+        self.browser_pref = Adw.PreferencesGroup()
+        self.browser_pref.set_title("Browser")
+        self.browser_pref.set_description("Choose where profiles are stored. If you don't know what this is, leave it as default, it will work in most cases.")
+        
+        self.browser_row = Adw.EntryRow(
+            title="Path to the directory where profiles are stored",
+            
+        )
+        self.browser_row.set_text("~/.mozilla/firefox")
+        self.browser_row.set_show_apply_button(True)
+        self.browser_row.connect("apply", self.on_apply)
+        self.browser_pref.add(self.browser_row)
+        
+        
+        self.main_page.add(self.browser_pref)
+        
+        self.window.add(self.main_page)
+        self.window.present()
+        
+    def on_apply(self, widget):
+        self.profile_dir = Path(self.browser_row.get_text()).expanduser()
+        print(self.profile_dir)
+        if not self.profile_dir.exists():
+            self.browser_row.set_css_classes(["error"])
+            self.profile_dir = None
+        else:
+            self.browser_row.remove_css_class("error")
+        
+        
+        
 
     def on_overwrite(self, widget, _):
         # This is called when the user changes the overwrite setting
@@ -144,11 +180,14 @@ class FirefoxGnomeThemePlugin(IPlugin):
         
         print("Applying Firefox Gnome Theme")
         print(self.custom_settings["overwrite"])
-        mozilla_profile_dir = Path("~/.mozilla/firefox/").expanduser()
+        if self.profile_dir:
+            profile_dir = self.profile_dir
+        else:
+            profile_dir = Path("~/.mozilla/firefox/").expanduser()
         profiles = []
-        if mozilla_profile_dir.exists():
-            os.chdir(mozilla_profile_dir)
-            for folder in mozilla_profile_dir.iterdir():
+        if profile_dir.exists():
+            os.chdir(profile_dir)
+            for folder in profile_dir.iterdir():
                 if folder.is_dir():
                     if str(folder).endswith(".default-release") or str(folder).endswith(".default"):
                         profiles.append(folder)
