@@ -189,7 +189,12 @@ class FirefoxGnomeThemePlugin(IPlugin):
             os.chdir(profile_dir)
             for folder in profile_dir.iterdir():
                 if folder.is_dir():
-                    if str(folder).endswith(".default-release") or str(folder).endswith(".default"):
+                    if (
+                        str(folder).endswith(".default-release")
+                        or str(folder).endswith(".default")
+                        or str(folder).endswith(".default-nightly")
+                        or str(folder).endswith(".dev-edition-default")
+                    ):
                         profiles.append(folder)
 
         if len(profiles) == 0:
