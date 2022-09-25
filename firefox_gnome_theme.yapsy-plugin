@@ -1,9 +1,9 @@
 [Core]
-Name = Firefox GNOME Theme 2
-Module = firefox_gnome_theme2
+Name = Firefox GNOME Theme
+Module = firefox_gnome_theme
    
 [Documentation]
-Description = Firefox GNOME Theme 2
+Description = Firefox GNOME Theme
 Author = aspizu
 Version = 0.0.0
 Website = https://gradienceteam.github.io/plugins/firefox-gnome-theme/
