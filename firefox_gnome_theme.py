@@ -3,7 +3,14 @@ from pathlib import Path
 from yapsy.IPlugin import IPlugin
 
 TEMPLATE = """
-/* This file was overwritten by the firefox_gnome_theme2 plugin from Gradience */
+/* 
+ * =========================================================================== *
+ * This file was overwritten by the firefox_gnome_theme plugin from Gradience  *
+ *                                                                             *
+ * Report issue at: https://github.com/GradienceTeam/Plugins/issues/new/choose *
+ * Join us on matrix: https://matrix.to/#/#Gradience:matrix.org                *
+ * =========================================================================== *
+ */
 
 :root {{
     --gnome-browser-before-load-background:        {window_bg_color};
@@ -36,6 +43,7 @@ TEMPLATE = """
 class FirefoxGnomeTheme2Plugin(IPlugin):
     plugin_id = "firefox_gnome_theme"
     title = "Firefox GNOME Theme"
+    author = "Gradience Team"
 
     def give_preset_settings(self, preset_settings, custom_settings=None):
         self.variables = preset_settings["variables"]
