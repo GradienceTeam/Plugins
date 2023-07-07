@@ -1,0 +1,8 @@
+[Core]
+Name = Mailspring Libadwaita Theme
+Module = mailspring_libadwaita_theme
+   
+[Documentation]
+Description = Mailspring Libadwaita Theme
+Author = Spaziale
+Version = 0.1.0
