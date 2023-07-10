@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import os
+
 from yapsy.IPlugin import IPlugin
 
 class Qt5ctColorScheme2Plugin(IPlugin):
@@ -15,7 +17,7 @@ class Qt5ctColorScheme2Plugin(IPlugin):
 
     def open_settings(self):
         return False
-    
+
     def apply(self, dark_theme=False):
         def transform_color(string):
             if (string.startswith("#")):
@@ -114,7 +116,15 @@ class Qt5ctColorScheme2Plugin(IPlugin):
                 for match in matches:
                     qt_disabled[qt_pos.get(match)] = tran
         try:
-            path = "~/.config/qt5ct/colors/Gradience.conf"
+            user_config_dir = os.environ.get(
+                "XDG_CONFIG_HOME", os.environ["HOME"] + "/.config"
+            )
+
+            path = os.path.expanduser("~/.config/qt5ct/colors")
+            if not os.path.exists(path):
+                os.makedirs(path)
+            path = os.path.join(path, "Gradience.conf")
+
             direc = Path(path).expanduser()
             with open(direc, "w") as f:
                 f.write("[ColorScheme]\n")
