@@ -1,9 +1,0 @@
-[Core]
-Name = Tilix
-Module = tilix
-   
-[Documentation]
-Description = Tilix
-Author = Gradience Team
-Version = 0.1.0
-Website = https://gradienceteam.github.io/plugins/tilix/

@@ -1,7 +1,7 @@
 [Core]
-Name = Qt5ct Color Scheme
-Module = qt5ct_color_scheme
-   
+Name = Qt5ct
+Module = qt5ct
+
 [Documentation]
 Description = Creates a qt5ct color scheme file in the appropriate folder with the same name as the preset
 Author = bertini97
