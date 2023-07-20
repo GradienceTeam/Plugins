@@ -5,8 +5,6 @@ builtin_plugins_list = files([
     'mailspring.yapsy-plugin',
     'qt5ct.py',
     'qt5ct.yapsy-plugin',
-    'tilix.py',
-    'tilix.yapsy-plugin'
 ])
 
 install_data(
