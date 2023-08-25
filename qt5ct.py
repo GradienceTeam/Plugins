@@ -22,11 +22,15 @@ class Qt5ctColorScheme2Plugin(IPlugin):
         def transform_color(string):
             if (string.startswith("#")):
                 return '#' + 'ff' + string[1:8]
-            elif (string.startswith("rgba")):
+            elif (string.startswith("rgba(")):
                 rgba_strings = string.strip("rgba()").split(", ")
                 r, g, b = [int(x) for x in rgba_strings[0:3]]
                 alpha = int(float(rgba_strings[3]) * 255)
                 return '#{:02x}{:02x}{:02x}{:02x}'.format(alpha, r, g, b)
+            elif (string.startswith("rgb(")):
+                rgb_strings = string.strip("rgb()").split(", ")
+                r, g, b = [int(x) for x in rgb_strings[0:3]]
+                return '#{:02x}{:02x}{:02x}{:02x}'.format(255, r, g, b)
             else: print("ERROR " + string)
         qt_pos = {
             "window_text":          0,
