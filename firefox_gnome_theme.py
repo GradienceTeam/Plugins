@@ -120,6 +120,7 @@ class FirefoxGnomeTheme2Plugin(IPlugin):
             "~/.librewolf",
             "~/.var/app/org.mozilla.firefox/.mozilla/firefox",
             "~/.var/app/io.gitlab.librewolf-community/.librewolf",
+            "~/snap/firefox/common/.mozilla/firefox",
         ]:
             try:
                 directory = Path(path).expanduser()
