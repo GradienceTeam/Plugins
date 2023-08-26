@@ -1,5 +1,5 @@
 name: "💡 Plugin request"
-description: Suggest a plugin"
+description: Suggest a plugin
 title: "plugin: "
 labels: ["enhancement", "plugin-request"]
 body:
