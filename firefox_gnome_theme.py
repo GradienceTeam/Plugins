@@ -137,6 +137,7 @@ class FirefoxGnomeTheme2Plugin(IPlugin):
                 for result in results:
                     try:
                         if result.resolve().is_dir():
+                            Path(f"{result}/chrome/firefox-gnome-theme").mkdir(mode=0o755, parents=True, exist_ok=True)
                             with open(
                                 f"{result}/chrome/firefox-gnome-theme/customChrome.css",
                                 "w",
@@ -147,4 +148,6 @@ class FirefoxGnomeTheme2Plugin(IPlugin):
             except OSError:
                 pass
             except StopIteration:
+                pass
+            except FileExistsError:
                 pass
