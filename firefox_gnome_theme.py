@@ -118,8 +118,10 @@ class FirefoxGnomeTheme2Plugin(IPlugin):
         for path in [
             "~/.mozilla/firefox",
             "~/.librewolf",
+            "~/.waterfox",
             "~/.var/app/org.mozilla.firefox/.mozilla/firefox",
             "~/.var/app/io.gitlab.librewolf-community/.librewolf",
+            "~/.var/app/net.waterfox.waterfox",
             "~/snap/firefox/common/.mozilla/firefox",
         ]:
             try:
