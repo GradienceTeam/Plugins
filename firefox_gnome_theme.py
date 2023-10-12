@@ -121,7 +121,7 @@ class FirefoxGnomeTheme2Plugin(IPlugin):
             "~/.waterfox",
             "~/.var/app/org.mozilla.firefox/.mozilla/firefox",
             "~/.var/app/io.gitlab.librewolf-community/.librewolf",
-            "~/.var/app/net.waterfox.waterfox",
+            "~/.var/app/net.waterfox.waterfox/.waterfox",
             "~/snap/firefox/common/.mozilla/firefox",
         ]:
             try:
